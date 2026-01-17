@@ -1,0 +1,21 @@
+routes:
+  users_service:
+    path: '/users'
+    target: 'https://jsonplaceholder.typicode.com/users'
+    methods: ['GET', 'POST']
+    authentication: false
+    rate_limit: 100
+
+  posts_service:
+    path: '/posts'
+    target: 'https://jsonplaceholder.typicode.com/posts'
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    authentication: false
+    rate_limit: 100
+
+  comments_service:
+    path: '/comments'
+    target: 'https://jsonplaceholder.typicode.com/comments'
+    methods: ['GET', 'POST']
+    authentication: false
+    rate_limit: 100
