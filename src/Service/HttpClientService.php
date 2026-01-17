@@ -13,6 +13,22 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class HttpClientService
 {
+    /**
+     * Headers that should not be forwarded.
+     */
+    private const array HOP_BY_HOP_HEADERS = [
+        'connection',
+        'upgrade',
+        'proxy-authenticate',
+        'proxy-authorization',
+        'te',
+        'trailers',
+        'transfer-encoding',
+        'content-length',
+        'accept-encoding',
+        'host'
+    ];
+
     public function __construct(
         private readonly HttpClientInterface $httpClient
     )
@@ -33,19 +49,7 @@ class HttpClientService
         array   $headers = []
     ): ResponseInterface
     {
-        $requestHeaders = array_merge(
-            $headers,
-            $request->headers->all()
-        );
-
-        $hopByHopHeaders = [
-            'connection', 'upgrade', 'proxy-authenticate', 'proxy-authorization',
-            'te', 'trailers', 'transfer-encoding', 'content-length', 'accept-encoding', 'host'
-        ];
-
-        foreach ($hopByHopHeaders as $header) {
-            unset($requestHeaders[$header]);
-        }
+        $requestHeaders = $this->prepareHeaders($request, $headers);
 
         $options = [
             'headers' => $requestHeaders,
@@ -60,5 +64,24 @@ class HttpClientService
             $targetUrl,
             $options
         );
+    }
+
+    /**
+     * Prepares the final set of headers for request.
+     *
+     * @param Request $request
+     * @param array $headers
+     * @return array
+     */
+    protected function prepareHeaders(Request $request, array $headers): array
+    {
+        $headers = array_merge($request->headers->all(), $headers);
+
+        foreach (self::HOP_BY_HOP_HEADERS as $headerName) {
+            unset($headers[$headerName]);
+            unset($headers[strtolower($headerName)]);
+        }
+
+        return $headers;
     }
 }
