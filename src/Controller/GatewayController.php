@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Exception\MethodNotAllowedException;
+use App\Exception\RouteNotFoundException;
+use App\Exception\TargetApiException;
 use App\Service\HttpClientService;
 use App\Service\RouteLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,9 +21,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class GatewayController extends AbstractController
 {
     public function __construct(
-        private readonly RouteLoader $routeLoader,
+        private readonly RouteLoader       $routeLoader,
         private readonly HttpClientService $httpClientService
-    ) {
+    )
+    {
     }
 
     /**
@@ -38,19 +42,11 @@ class GatewayController extends AbstractController
         $routeConfig = $this->routeLoader->getRouteByPath($path);
 
         if (!$routeConfig) {
-            return new Response(
-                json_encode(['error' => 'Route not found']),
-                404,
-                ['Content-Type' => 'application/json']
-            );
+            throw new RouteNotFoundException();
         }
 
         if (!in_array($request->getMethod(), $routeConfig['methods'])) {
-            return new Response(
-                json_encode(['error' => 'Method not allowed']),
-                405,
-                ['Content-Type' => 'application/json']
-            );
+            throw new MethodNotAllowedException();
         }
 
         $targetUrl = $routeConfig['target'];
@@ -65,14 +61,7 @@ class GatewayController extends AbstractController
             return new Response($content, $statusCode, $filteredHeaders);
 
         } catch (\Exception $e) {
-            return new Response(
-                json_encode([
-                    'error' => 'Failed to reach target API',
-                    'message' => $e->getMessage()
-                ]),
-                500,
-                ['Content-Type' => 'application/json']
-            );
+            throw new TargetApiException(message: 'Failed to reach target API: ' . $e->getMessage());
         }
     }
 }
