@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     nginx:
-        container_name: task_management_api_nginx
+        container_name: symfony_api_gateway_nginx
         build:
             context: .
             dockerfile: docker/nginx/Dockerfile
@@ -14,7 +14,7 @@ services:
             - php
 
     php:
-        container_name: task_management_api_php
+        container_name: symfony_api_gateway_php
         build:
             context: .
             dockerfile: docker/php-fpm/Dockerfile
