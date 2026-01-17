@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+    nginx:
+        container_name: task_management_api_nginx
+        build:
+            context: .
+            dockerfile: docker/nginx/Dockerfile
+        ports:
+            - "${HTTP_PORT}:80"
+        volumes:
+            - .:/var/www
+        depends_on:
+            - php
+
+    php:
+        container_name: task_management_api_php
+        build:
+            context: .
+            dockerfile: docker/php-fpm/Dockerfile
+        volumes:
+            - .:/var/www
