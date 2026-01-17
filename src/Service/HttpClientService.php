@@ -6,6 +6,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+/**
+ * HttpClientService handles HTTP requests to external services.
+ *
+ * This service is responsible for forwarding requests to target APIs.
+ */
 class HttpClientService
 {
     public function __construct(
@@ -14,6 +19,14 @@ class HttpClientService
     {
     }
 
+    /**
+     * Proxies an HTTP request to a target URL.
+     *
+     * @param string $targetUrl The destination URL
+     * @param Request $request The original incoming request
+     * @param array $headers Additional headers to include in the request
+     * @return ResponseInterface The response from the target service
+     */
     public function proxyRequest(
         string  $targetUrl,
         Request $request,
