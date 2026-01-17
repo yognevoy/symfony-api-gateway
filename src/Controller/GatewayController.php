@@ -9,6 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * GatewayController handles API requests and routes them to appropriate backend services.
+ *
+ * This controller acts as a reverse proxy, forwarding requests to configured target APIs
+ * based on path patterns defined in the route configuration.
+ */
 class GatewayController extends AbstractController
 {
     public function __construct(
@@ -17,6 +23,12 @@ class GatewayController extends AbstractController
     ) {
     }
 
+    /**
+     * Proxy method forwards incoming requests to backend services.
+     *
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/{path}', name: 'api_gateway_proxy', requirements: ['path' => '.+'], methods: ['GET', 'POST', 'PUT', 'DELETE'])]
     #[Route('/', name: 'api_gateway_root', methods: ['GET', 'POST', 'PUT', 'DELETE'])]
     public function proxy(Request $request): Response
