@@ -2,10 +2,10 @@
 
 namespace App\Service\Auth;
 
+use App\Exception\Auth\ApiKeyAuthenticationException;
 use App\ValueObject\Auth\ApiKeyAuthenticationConfig;
 use App\ValueObject\Auth\AuthenticationConfigInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * ApiKeyAuthenticator handles API key authentication.
@@ -36,14 +36,14 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
             if (str_starts_with($apiKey, $prefix)) {
                 $apiKey = substr($apiKey, strlen($prefix));
             } else {
-                throw new UnauthorizedHttpException('API key', 'Invalid API key format');
+                throw ApiKeyAuthenticationException::invalidFormat();
             }
         }
 
         $validKeys = $config->keys;
 
         if ($apiKey === null || !in_array($apiKey, $validKeys)) {
-            throw new UnauthorizedHttpException('API key', 'Invalid API key');
+            throw ApiKeyAuthenticationException::invalidApiKey();
         }
 
         return true;

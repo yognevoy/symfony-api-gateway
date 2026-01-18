@@ -2,10 +2,10 @@
 
 namespace App\Service\Auth;
 
+use App\Exception\Auth\BasicAuthenticationException;
 use App\ValueObject\Auth\AuthenticationConfigInterface;
 use App\ValueObject\Auth\BasicAuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * BasicAuthenticator handles HTTP Basic Authentication.
@@ -28,18 +28,18 @@ class BasicAuthenticator implements AuthenticatorInterface
         $authHeader = $request->headers->get('Authorization') ?: $request->headers->get('HTTP_AUTHORIZATION');
 
         if (!$authHeader || !preg_match('/^Basic\s+(.*)$/i', $authHeader, $matches)) {
-            throw new UnauthorizedHttpException('Basic', 'Invalid authorization header');
+            throw BasicAuthenticationException::missingCredentials();
         }
 
         $credentials = base64_decode($matches[1]);
         if (!$credentials) {
-            throw new UnauthorizedHttpException('Basic', 'Invalid credentials format');
+            throw BasicAuthenticationException::invalidCredentials();
         }
 
         [$username, $password] = explode(':', $credentials, 2) + [null, null];
 
         if ($username === null || $password === null) {
-            throw new UnauthorizedHttpException('Basic', 'Invalid credentials format');
+            throw BasicAuthenticationException::invalidCredentials();
         }
 
         $validUsers = $config->users;
@@ -54,7 +54,7 @@ class BasicAuthenticator implements AuthenticatorInterface
             }
         }
 
-        throw new UnauthorizedHttpException('Basic', 'Invalid credentials');
+        throw BasicAuthenticationException::invalidCredentials();
     }
 
     /**
