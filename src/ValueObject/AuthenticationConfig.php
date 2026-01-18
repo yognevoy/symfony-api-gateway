@@ -4,24 +4,19 @@ namespace App\ValueObject;
 
 final class AuthenticationConfig
 {
-    private function __construct(
-        public readonly string  $type,
-        public readonly ?string $header = null,
-        public readonly ?string $prefix = null,
-        public readonly array   $keys = [],
-        public readonly array   $users = []
-    )
+    public static function fromArray(array $config): AuthenticationConfigInterface
     {
-    }
+        $type = $config['type'];
 
-    public static function fromArray(array $config): self
-    {
-        return new self(
-            $config['type'],
-            $config['header'] ?? null,
-            $config['prefix'] ?? null,
-            $config['keys'] ?? [],
-            $config['users'] ?? []
-        );
+        switch ($type) {
+            case 'api_key':
+                return ApiKeyAuthenticationConfig::fromArray($config);
+            case 'basic':
+                return BasicAuthenticationConfig::fromArray($config);
+            case 'none':
+                return NoAuthenticationConfig::fromArray($config);
+            default:
+                throw new \InvalidArgumentException("Unknown authentication type: {$type}");
+        }
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Service\Auth;
 
-use App\ValueObject\AuthenticationConfig;
+use App\ValueObject\ApiKeyAuthenticationConfig;
+use App\ValueObject\AuthenticationConfigInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -17,13 +18,13 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
      * Validates the API key from the request.
      *
      * @param Request $request
-     * @param AuthenticationConfig $config
+     * @param AuthenticationConfigInterface $config
      * @return bool
      */
-    public function validate(Request $request, AuthenticationConfig $config): bool
+    public function validate(Request $request, AuthenticationConfigInterface $config): bool
     {
-        if ($config->type !== 'api_key') {
-            return true;
+        if (!$config instanceof ApiKeyAuthenticationConfig) {
+            throw new \LogicException('Invalid configuration type passed to ApiKeyAuthenticator');
         }
 
         $headerName = $config->header ?? self::DEFAULT_HEADER;
@@ -46,5 +47,16 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
         }
 
         return true;
+    }
+
+    /**
+     * Checks if this authenticator supports the given configuration.
+     *
+     * @param AuthenticationConfigInterface $config
+     * @return bool
+     */
+    public function supports(AuthenticationConfigInterface $config): bool
+    {
+        return $config instanceof ApiKeyAuthenticationConfig;
     }
 }

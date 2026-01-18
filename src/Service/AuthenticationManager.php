@@ -3,7 +3,8 @@
 namespace App\Service;
 
 use App\Service\Auth\AuthenticatorInterface;
-use App\ValueObject\AuthenticationConfig;
+use App\ValueObject\AuthenticationConfigInterface;
+use App\ValueObject\NoAuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -23,44 +24,21 @@ class AuthenticationManager
      * Validates the authentication from the request.
      *
      * @param Request $request
-     * @param AuthenticationConfig $config
+     * @param AuthenticationConfigInterface $config
      * @return bool True if authentication is valid, throws exception otherwise
      */
-    public function validate(Request $request, AuthenticationConfig $config): bool
+    public function validate(Request $request, AuthenticationConfigInterface $config): bool
     {
-        if ($config->type === 'none') {
+        if ($config instanceof NoAuthenticationConfig) {
             return true;
         }
 
-        $authType = $config->type;
-
         foreach ($this->authenticators as $authenticator) {
-            if ($this->supports($authenticator, $authType)) {
+            if ($authenticator->supports($config)) {
                 return $authenticator->validate($request, $config);
             }
         }
 
-        throw new UnauthorizedHttpException(null, "Unsupported authentication type: {$authType}");
-    }
-
-    /**
-     * Checks if the authenticator supports the given type.
-     *
-     * @param AuthenticatorInterface $authenticator
-     * @param string $type
-     * @return bool True if the authenticator supports the type, false otherwise
-     */
-    private function supports(AuthenticatorInterface $authenticator, string $type): bool
-    {
-        $serviceName = (new \ReflectionClass($authenticator))->getShortName();
-
-        switch ($type) {
-            case 'api_key':
-                return $serviceName === 'ApiKeyAuthenticator';
-            case 'basic':
-                return $serviceName === 'BasicAuthenticator';
-            default:
-                return false;
-        }
+        throw new UnauthorizedHttpException(null, "Unsupported authentication type: {$config->getType()}");
     }
 }

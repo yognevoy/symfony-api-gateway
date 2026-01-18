@@ -2,7 +2,8 @@
 
 namespace App\Service\Auth;
 
-use App\ValueObject\AuthenticationConfig;
+use App\ValueObject\AuthenticationConfigInterface;
+use App\ValueObject\BasicAuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -15,13 +16,13 @@ class BasicAuthenticator implements AuthenticatorInterface
      * Validates the basic authentication from the request.
      *
      * @param Request $request
-     * @param AuthenticationConfig $config
+     * @param AuthenticationConfigInterface $config
      * @return bool
      */
-    public function validate(Request $request, AuthenticationConfig $config): bool
+    public function validate(Request $request, AuthenticationConfigInterface $config): bool
     {
-        if ($config->type !== 'basic') {
-            return true;
+        if (!$config instanceof BasicAuthenticationConfig) {
+            throw new \LogicException('Invalid configuration type passed to BasicAuthenticator');
         }
 
         $authHeader = $request->headers->get('Authorization') ?: $request->headers->get('HTTP_AUTHORIZATION');
@@ -54,5 +55,16 @@ class BasicAuthenticator implements AuthenticatorInterface
         }
 
         throw new UnauthorizedHttpException('Basic', 'Invalid credentials');
+    }
+
+    /**
+     * Checks if this authenticator supports the given configuration.
+     *
+     * @param AuthenticationConfigInterface $config
+     * @return bool
+     */
+    public function supports(AuthenticationConfigInterface $config): bool
+    {
+        return $config instanceof BasicAuthenticationConfig;
     }
 }
