@@ -2,6 +2,7 @@
 
 namespace App\Service\Auth;
 
+use App\ValueObject\AuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -13,8 +14,8 @@ interface AuthenticatorInterface
      * Validates the authentication from the request.
      *
      * @param Request $request
-     * @param array $config
+     * @param AuthenticationConfig $config
      * @return bool True if authentication is valid, throws exception otherwise
      */
-    public function validate(Request $request, array $config): bool;
+    public function validate(Request $request, AuthenticationConfig $config): bool;
 }

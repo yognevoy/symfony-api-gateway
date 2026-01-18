@@ -2,6 +2,7 @@
 
 namespace App\Service\Auth;
 
+use App\ValueObject\AuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -14,12 +15,12 @@ class BasicAuthenticator implements AuthenticatorInterface
      * Validates the basic authentication from the request.
      *
      * @param Request $request
-     * @param array $config
+     * @param AuthenticationConfig $config
      * @return bool
      */
-    public function validate(Request $request, array $config): bool
+    public function validate(Request $request, AuthenticationConfig $config): bool
     {
-        if (!isset($config['type']) || $config['type'] !== 'basic') {
+        if ($config->type !== 'basic') {
             return true;
         }
 
@@ -40,7 +41,7 @@ class BasicAuthenticator implements AuthenticatorInterface
             throw new UnauthorizedHttpException('Basic', 'Invalid credentials format');
         }
 
-        $validUsers = $config['users'] ?? [];
+        $validUsers = $config->users;
 
         foreach ($validUsers as $user) {
             if (

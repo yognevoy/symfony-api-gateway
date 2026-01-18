@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Service\Auth\AuthenticatorInterface;
+use App\ValueObject\AuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -22,16 +23,16 @@ class AuthenticationManager
      * Validates the authentication from the request.
      *
      * @param Request $request
-     * @param array $config
+     * @param AuthenticationConfig $config
      * @return bool True if authentication is valid, throws exception otherwise
      */
-    public function validate(Request $request, array $config): bool
+    public function validate(Request $request, AuthenticationConfig $config): bool
     {
-        if (empty($config) || !isset($config['type']) || $config['type'] === 'none') {
+        if ($config->type === 'none') {
             return true;
         }
 
-        $authType = $config['type'];
+        $authType = $config->type;
 
         foreach ($this->authenticators as $authenticator) {
             if ($this->supports($authenticator, $authType)) {

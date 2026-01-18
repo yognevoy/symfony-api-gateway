@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\ValueObject\RouteConfig;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -34,14 +35,16 @@ class RouteLoader
         $config = Yaml::parseFile($this->configPath);
 
         if (isset($config['routes'])) {
-            $this->routes = $config['routes'];
+            foreach ($config['routes'] as $key => $routeData) {
+                $this->routes[$key] = RouteConfig::fromArray($routeData);
+            }
         }
     }
 
     /**
      * Returns all loaded route configurations.
      *
-     * @return array
+     * @return array<RouteConfig>
      */
     public function getRoutes(): array
     {
@@ -52,13 +55,13 @@ class RouteLoader
      * Finds a route configuration by its path.
      *
      * @param string $path
-     * @return array|null
+     * @return RouteConfig|null
      */
-    public function getRouteByPath(string $path): ?array
+    public function getRouteByPath(string $path): ?RouteConfig
     {
         foreach ($this->routes as $routeConfig) {
-            if ($path === $routeConfig['path'] ||
-                (str_starts_with($path, $routeConfig['path'] . '/'))) {
+            if ($path === $routeConfig->path ||
+                (str_starts_with($path, $routeConfig->path . '/'))) {
                 return $routeConfig;
             }
         }
@@ -70,9 +73,9 @@ class RouteLoader
      * Finds a route configuration by its name.
      *
      * @param string $name
-     * @return array|null
+     * @return RouteConfig|null
      */
-    public function getRouteByName(string $name): ?array
+    public function getRouteByName(string $name): ?RouteConfig
     {
         return $this->routes[$name] ?? null;
     }
