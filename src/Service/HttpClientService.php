@@ -16,7 +16,7 @@ class HttpClientService
     /**
      * Headers that should not be forwarded.
      */
-    private const array HOP_BY_HOP_HEADERS = [
+    private const HOP_BY_HOP_HEADERS = [
         'connection',
         'upgrade',
         'proxy-authenticate',
