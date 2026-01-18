@@ -30,3 +30,15 @@ services:
     App\Service\RouteLoader:
         arguments:
             $configPath: '%api_routes.config%'
+
+    App\Service\Auth\ApiKeyAuthenticator:
+        tags:
+            - { name: app.authenticator }
+
+    App\Service\Auth\BasicAuthenticator:
+        tags:
+            - { name: app.authenticator }
+
+    App\Service\AuthenticationManager:
+        arguments:
+            $authenticators: !tagged_iterator 'app.authenticator'

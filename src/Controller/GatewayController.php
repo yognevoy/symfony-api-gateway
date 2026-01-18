@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Exception\MethodNotAllowedException;
 use App\Exception\RouteNotFoundException;
 use App\Exception\TargetApiException;
+use App\Service\AuthenticationManager;
 use App\Service\HttpClientService;
 use App\Service\RouteLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,8 +22,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class GatewayController extends AbstractController
 {
     public function __construct(
-        private readonly RouteLoader       $routeLoader,
-        private readonly HttpClientService $httpClientService
+        private readonly RouteLoader           $routeLoader,
+        private readonly HttpClientService     $httpClientService,
+        private readonly AuthenticationManager $authenticationManager
     )
     {
     }
@@ -48,6 +50,9 @@ class GatewayController extends AbstractController
         if (!in_array($request->getMethod(), $routeConfig['methods'])) {
             throw new MethodNotAllowedException();
         }
+
+        $authConfig = $routeConfig['authentication'] ?? [];
+        $this->authenticationManager->validate($request, $authConfig);
 
         $targetUrl = $routeConfig['target'];
 

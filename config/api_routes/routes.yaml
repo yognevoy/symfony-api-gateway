@@ -3,19 +3,30 @@ routes:
     path: '/users'
     target: 'https://jsonplaceholder.typicode.com/users'
     methods: ['GET', 'POST']
-    authentication: false
+    authentication:
+        type: 'none'
     rate_limit: 100
 
   posts_service:
     path: '/posts'
     target: 'https://jsonplaceholder.typicode.com/posts'
     methods: ['GET', 'POST', 'PUT', 'DELETE']
-    authentication: false
+    authentication:
+        type: 'api_key'
+        header: 'Authorization'
+        prefix: 'Bearer '
+        keys: [ 'bearer-token-1', 'bearer-token-2' ]
     rate_limit: 100
 
   comments_service:
     path: '/comments'
     target: 'https://jsonplaceholder.typicode.com/comments'
     methods: ['GET', 'POST']
-    authentication: false
+    authentication:
+      type: 'basic'
+      users:
+        - username: 'admin'
+          password: 'password123'
+        - username: 'user'
+          password: 'userpass'
     rate_limit: 100
