@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\Service\Auth\AuthenticatorInterface;
-use App\ValueObject\AuthenticationConfigInterface;
-use App\ValueObject\NoAuthenticationConfig;
+use App\ValueObject\Auth\AuthenticationConfigInterface;
+use App\ValueObject\Auth\NoAuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 

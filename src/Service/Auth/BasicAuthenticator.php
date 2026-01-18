@@ -2,8 +2,8 @@
 
 namespace App\Service\Auth;
 
-use App\ValueObject\AuthenticationConfigInterface;
-use App\ValueObject\BasicAuthenticationConfig;
+use App\ValueObject\Auth\AuthenticationConfigInterface;
+use App\ValueObject\Auth\BasicAuthenticationConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 

@@ -2,8 +2,8 @@
 
 namespace App\Service\Auth;
 
-use App\ValueObject\ApiKeyAuthenticationConfig;
-use App\ValueObject\AuthenticationConfigInterface;
+use App\ValueObject\Auth\ApiKeyAuthenticationConfig;
+use App\ValueObject\Auth\AuthenticationConfigInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 

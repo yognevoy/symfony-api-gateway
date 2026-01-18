@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ValueObject;
+namespace App\ValueObject\Auth;
 
 /**
  * Configuration for no authentication (public access).

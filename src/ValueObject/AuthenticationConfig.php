@@ -2,6 +2,11 @@
 
 namespace App\ValueObject;
 
+use App\ValueObject\Auth\AuthenticationConfigInterface;
+use App\ValueObject\Auth\ApiKeyAuthenticationConfig;
+use App\ValueObject\Auth\BasicAuthenticationConfig;
+use App\ValueObject\Auth\NoAuthenticationConfig;
+
 final class AuthenticationConfig
 {
     public static function fromArray(array $config): AuthenticationConfigInterface

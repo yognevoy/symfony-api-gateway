@@ -2,7 +2,7 @@
 
 namespace App\Service\Auth;
 
-use App\ValueObject\AuthenticationConfigInterface;
+use App\ValueObject\Auth\AuthenticationConfigInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

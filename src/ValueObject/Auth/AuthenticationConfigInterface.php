@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ValueObject;
+namespace App\ValueObject\Auth;
 
 /**
  * Base interface for authentication configuration objects.

@@ -2,6 +2,8 @@
 
 namespace App\ValueObject;
 
+use App\ValueObject\Auth\AuthenticationConfigInterface;
+
 final class RouteConfig
 {
     private function __construct(
