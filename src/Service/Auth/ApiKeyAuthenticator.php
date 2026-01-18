@@ -32,12 +32,7 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
         $apiKey = $request->headers->get($headerName);
 
         if ($config->prefix !== null && $apiKey !== null) {
-            $prefix = $config->prefix;
-            if (str_starts_with($apiKey, $prefix)) {
-                $apiKey = substr($apiKey, strlen($prefix));
-            } else {
-                throw ApiKeyAuthenticationException::invalidFormat();
-            }
+            $apiKey = $this->normalizeApiKey($apiKey, $config->prefix);
         }
 
         $validKeys = $config->keys;
@@ -47,6 +42,22 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
         }
 
         return true;
+    }
+
+    /**
+     * Normalizes the API key by removing the specified prefix.
+     *
+     * @param string $apiKey
+     * @param string $prefix
+     * @return string
+     */
+    protected function normalizeApiKey(string $apiKey, string $prefix): string
+    {
+        if (str_starts_with($apiKey, $prefix)) {
+            return substr($apiKey, strlen($prefix));
+        } else {
+            throw ApiKeyAuthenticationException::invalidFormat();
+        }
     }
 
     /**
