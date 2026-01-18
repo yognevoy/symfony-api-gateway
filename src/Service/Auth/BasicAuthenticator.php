@@ -25,22 +25,8 @@ class BasicAuthenticator implements AuthenticatorInterface
             throw new \LogicException('Invalid configuration type passed to BasicAuthenticator');
         }
 
-        $authHeader = $request->headers->get('Authorization') ?: $request->headers->get('HTTP_AUTHORIZATION');
-
-        if (!$authHeader || !preg_match('/^Basic\s+(.*)$/i', $authHeader, $matches)) {
-            throw BasicAuthenticationException::missingCredentials();
-        }
-
-        $credentials = base64_decode($matches[1]);
-        if (!$credentials) {
-            throw BasicAuthenticationException::invalidCredentials();
-        }
-
-        [$username, $password] = explode(':', $credentials, 2) + [null, null];
-
-        if ($username === null || $password === null) {
-            throw BasicAuthenticationException::invalidCredentials();
-        }
+        $credentials = $this->decodeCredentials($request);
+        [$username, $password] = $this->parseCredentials($credentials);
 
         $validUsers = $config->users;
 
@@ -55,6 +41,46 @@ class BasicAuthenticator implements AuthenticatorInterface
         }
 
         throw BasicAuthenticationException::invalidCredentials();
+    }
+
+    /**
+     * Decodes credentials from the Authorization header.
+     *
+     * @param Request $request
+     * @return string
+     */
+    protected function decodeCredentials(Request $request): string
+    {
+        $authHeader = $request->headers->get('Authorization')
+            ?: $request->headers->get('HTTP_AUTHORIZATION');
+
+        if (!$authHeader || !preg_match('/^Basic\s+(.*)$/i', $authHeader, $matches)) {
+            throw BasicAuthenticationException::missingCredentials();
+        }
+
+        $credentials = base64_decode($matches[1]);
+        if (!$credentials) {
+            throw BasicAuthenticationException::invalidCredentials();
+        }
+
+        return $credentials;
+    }
+
+    /**
+     * Parses username and password from decoded credentials.
+     *
+     * @param string $credentials
+     * @return array Array of [username, password]
+     */
+    protected function parseCredentials(string $credentials): array
+    {
+        [$username, $password] = explode(':', $credentials, 2) + [null, null];
+
+        if ($username === null || $password === null) {
+            throw BasicAuthenticationException::invalidCredentials();
+        }
+
+        return [$username, $password];
     }
 
     /**
