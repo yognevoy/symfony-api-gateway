@@ -60,8 +60,7 @@ class RouteLoader
     public function getRouteByPath(string $path): ?RouteConfig
     {
         foreach ($this->routes as $routeConfig) {
-            if ($path === $routeConfig->path ||
-                (str_starts_with($path, $routeConfig->path . '/'))) {
+            if ($path === $routeConfig->path) {
                 return $routeConfig;
             }
         }

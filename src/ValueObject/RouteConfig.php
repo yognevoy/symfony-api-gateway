@@ -11,7 +11,8 @@ final class RouteConfig
         public readonly string                        $target,
         public readonly array                         $methods,
         public readonly AuthenticationConfigInterface $authentication,
-        public readonly int                           $rateLimit
+        public readonly int                           $rateLimit,
+        public readonly ResponseFilterConfig          $responseFilter
     )
     {
     }
@@ -23,7 +24,8 @@ final class RouteConfig
             $config['target'],
             $config['methods'],
             AuthenticationConfig::fromArray($config['authentication']),
-            $config['rate_limit']
+            $config['rate_limit'],
+            ResponseFilterConfig::fromArray($config['response_filter'] ?? [])
         );
     }
 }

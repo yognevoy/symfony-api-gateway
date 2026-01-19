@@ -7,6 +7,16 @@ routes:
         type: 'none'
     rate_limit: 100
 
+  user_service:
+      path: '/users/1/'
+      target: 'https://jsonplaceholder.typicode.com/users/1/'
+      methods: [ 'GET', 'POST' ]
+      authentication:
+          type: 'none'
+      response_filter:
+          include: [ 'id', 'name', 'username' ]
+      rate_limit: 100
+
   posts_service:
     path: '/posts'
     target: 'https://jsonplaceholder.typicode.com/posts'
@@ -17,6 +27,16 @@ routes:
         prefix: 'Bearer '
         keys: [ 'bearer-token-1', 'bearer-token-2' ]
     rate_limit: 100
+
+  post_service:
+      path: '/posts/1/'
+      target: 'https://jsonplaceholder.typicode.com/posts/1/'
+      methods: [ 'GET', 'POST' ]
+      authentication:
+          type: 'none'
+      response_filter:
+          exclude: [ 'userId', 'id' ]
+      rate_limit: 100
 
   comments_service:
     path: '/comments'

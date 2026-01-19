@@ -7,6 +7,7 @@ use App\Exception\RouteNotFoundException;
 use App\Exception\TargetApiException;
 use App\Service\AuthenticationManager;
 use App\Service\HttpClientService;
+use App\Service\ResponseFilterService;
 use App\Service\RouteLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,8 @@ class GatewayController extends AbstractController
     public function __construct(
         private readonly RouteLoader           $routeLoader,
         private readonly HttpClientService     $httpClientService,
-        private readonly AuthenticationManager $authenticationManager
+        private readonly AuthenticationManager $authenticationManager,
+        private readonly ResponseFilterService $responseFilterService
     )
     {
     }
@@ -59,11 +61,21 @@ class GatewayController extends AbstractController
         $targetUrl = $routeConfig->target;
 
         try {
-            $response = $this->httpClientService->proxyRequest($targetUrl, $request);
+            $response = $this->httpClientService->proxyRequest(
+                $targetUrl,
+                $request
+            );
 
             $statusCode = $response->getStatusCode();
             $content = $response->getContent(false);
             $filteredHeaders = [];
+
+            if (!$routeConfig->responseFilter->isEmpty()) {
+                $content = $this->responseFilterService->applyFilter(
+                    $content,
+                    $routeConfig->responseFilter
+                );
+            }
 
             return new Response($content, $statusCode, $filteredHeaders);
 
