@@ -43,11 +43,14 @@ class GatewayController extends AbstractController
     {
         $path = $request->getPathInfo();
 
-        $routeConfig = $this->routeLoader->getRouteByPath($path);
+        $routeMatch = $this->routeLoader->getRouteByPath($path);
 
-        if (!$routeConfig) {
+        if (!$routeMatch) {
             throw new RouteNotFoundException();
         }
+
+        $routeConfig = $routeMatch->route;
+        $variables = $routeMatch->variables;
 
         if (!in_array($request->getMethod(), $routeConfig->methods)) {
             throw new MethodNotAllowedException();
@@ -58,7 +61,10 @@ class GatewayController extends AbstractController
             $routeConfig->authentication
         );
 
-        $targetUrl = $routeConfig->target;
+        $targetUrl = $this->routeLoader->substituteVariables(
+            $routeConfig->target,
+            $variables
+        );
 
         try {
             $response = $this->httpClientService->proxyRequest(

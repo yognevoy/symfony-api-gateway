@@ -8,8 +8,8 @@ routes:
     rate_limit: 100
 
   user_service:
-      path: '/users/1/'
-      target: 'https://jsonplaceholder.typicode.com/users/1/'
+      path: '/users/{id}/'
+      target: 'https://jsonplaceholder.typicode.com/users/{id}/'
       methods: [ 'GET', 'POST' ]
       authentication:
           type: 'none'
@@ -29,8 +29,8 @@ routes:
     rate_limit: 100
 
   post_service:
-      path: '/posts/1/'
-      target: 'https://jsonplaceholder.typicode.com/posts/1/'
+      path: '/posts/{id}/'
+      target: 'https://jsonplaceholder.typicode.com/posts/{id}/'
       methods: [ 'GET', 'POST' ]
       authentication:
           type: 'none'

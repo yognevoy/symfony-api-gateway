@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\ValueObject\RouteConfig;
+use App\ValueObject\RouteMatchResult;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -12,10 +13,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class RouteLoader
 {
-    private array $routes = [];
+    protected array $routes = [];
 
     public function __construct(
-        private readonly string $configPath
+        protected readonly string $configPath
     )
     {
         $this->loadRoutes();
@@ -26,7 +27,7 @@ class RouteLoader
      *
      * @throws \RuntimeException If the configuration file is not found
      */
-    private function loadRoutes(): void
+    protected function loadRoutes(): void
     {
         if (!file_exists($this->configPath)) {
             throw new \RuntimeException(sprintf('Configuration file not found: %s', $this->configPath));
@@ -51,21 +52,103 @@ class RouteLoader
         return $this->routes;
     }
 
+    public function getRouteByPath(string $path): ?RouteMatchResult
+    {
+        $routeConfig = $this->findRouteByPath($path);
+
+        if ($routeConfig !== null) {
+            $variables = $this->extractVariables($routeConfig->path, $path);
+            return new RouteMatchResult($routeConfig, $variables);
+        }
+
+        return null;
+    }
+
     /**
-     * Finds a route configuration by its path.
+     * Finds a route configuration that matches the given path.
      *
      * @param string $path
      * @return RouteConfig|null
      */
-    public function getRouteByPath(string $path): ?RouteConfig
+    protected function findRouteByPath(string $path): ?RouteConfig
     {
         foreach ($this->routes as $routeConfig) {
-            if ($path === $routeConfig->path) {
+            if ($this->matchRoute($routeConfig->path, $path)) {
                 return $routeConfig;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Checks if a path matches a route pattern.
+     *
+     * @param string $pattern
+     * @param string $path
+     * @return bool
+     */
+    protected function matchRoute(string $pattern, string $path): bool
+    {
+        $regexPattern = preg_quote($pattern, '/');
+
+        $regexPattern = preg_replace('/\\\{([^\/]+)\\\}/', '([^\/]+)', $regexPattern);
+
+        $regexPattern = '/^' . $regexPattern . '$/';
+
+        return preg_match($regexPattern, $path) === 1;
+    }
+
+    /**
+     * Extracts variables from a path based on a pattern.
+     *
+     * @param string $pattern
+     * @param string $path
+     * @return array
+     */
+    protected function extractVariables(string $pattern, string $path): array
+    {
+        $regexPattern = preg_quote($pattern, '/');
+
+        $regexPattern = preg_replace('/\\\{([^\/]+)\\\}/', '([^\/]+)', $regexPattern);
+
+        $regexPattern = '/^' . $regexPattern . '$/';
+
+        preg_match_all('/\{([^\/]+)}/', $pattern, $variableNames);
+        $variableNames = $variableNames[1];
+
+        if (preg_match($regexPattern, $path, $matches)) {
+            array_shift($matches);
+
+            $variables = [];
+            foreach ($variableNames as $index => $name) {
+                if (isset($matches[$index])) {
+                    $variables[$name] = $matches[$index];
+                }
+            }
+
+            return $variables;
+        }
+
+        return [];
+    }
+
+    /**
+     * Substitutes variables in a target URL with actual values.
+     *
+     * @param string $target The target URL with placeholders (e.g., 'https://api.example.com/users/{id}/')
+     * @param array $variables Array of variable names to values
+     * @return string
+     */
+    public function substituteVariables(string $target, array $variables): string
+    {
+        $result = $target;
+
+        foreach ($variables as $name => $value) {
+            $result = str_replace('{' . $name . '}', $value, $result);
+        }
+
+        return $result;
     }
 
     /**
