@@ -121,9 +121,9 @@ class RouteLoader
             array_shift($matches);
 
             $variables = [];
-            foreach ($variableNames as $index => $name) {
-                if (isset($matches[$index])) {
-                    $variables[$name] = $matches[$index];
+            foreach ($variableNames as $i => $name) {
+                if (isset($matches[$i])) {
+                    $variables[$name] = $matches[$i];
                 }
             }
 
