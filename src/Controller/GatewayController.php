@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Exception\MethodNotAllowedException;
+use App\Exception\RateLimitExceededException;
 use App\Exception\RouteNotFoundException;
 use App\Exception\TargetApiException;
 use App\Service\AuthenticationManager;
 use App\Service\HttpClientService;
+use App\Service\RateLimiter;
 use App\Service\ResponseFilterService;
 use App\Service\RouteLoader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +28,8 @@ class GatewayController extends AbstractController
         private readonly RouteLoader           $routeLoader,
         private readonly HttpClientService     $httpClientService,
         private readonly AuthenticationManager $authenticationManager,
-        private readonly ResponseFilterService $responseFilterService
+        private readonly ResponseFilterService $responseFilterService,
+        private readonly RateLimiter           $rateLimiter
     )
     {
     }
@@ -56,6 +59,26 @@ class GatewayController extends AbstractController
             throw new MethodNotAllowedException();
         }
 
+        $headers = [];
+
+        if ($routeConfig->rateLimit->isEnabled()) {
+            $rateLimitResult = $this->rateLimiter->checkRateLimit(
+                $routeConfig,
+                md5($routeConfig->path)
+            );
+
+            if ($rateLimitResult->isLimited()) {
+                throw new RateLimitExceededException();
+            }
+
+            $headers = [
+                'X-RateLimit-Limit' => $rateLimitResult->limit,
+                'X-RateLimit-Remaining' => $rateLimitResult->remaining,
+                'X-RateLimit-Used' => $rateLimitResult->used,
+                'X-RateLimit-Reset' => $rateLimitResult->reset
+            ];
+        }
+
         $this->authenticationManager->validate(
             $request,
             $routeConfig->authentication
@@ -74,7 +97,6 @@ class GatewayController extends AbstractController
 
             $statusCode = $response->getStatusCode();
             $content = $response->getContent(false);
-            $filteredHeaders = [];
 
             if (!$routeConfig->responseFilter->isEmpty()) {
                 $content = $this->responseFilterService->applyFilter(
@@ -83,7 +105,7 @@ class GatewayController extends AbstractController
                 );
             }
 
-            return new Response($content, $statusCode, $filteredHeaders);
+            return new Response($content, $statusCode, $headers);
 
         } catch (\Exception $e) {
             throw new TargetApiException(message: 'Failed to reach target API: ' . $e->getMessage());

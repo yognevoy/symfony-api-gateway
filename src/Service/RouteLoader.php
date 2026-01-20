@@ -37,7 +37,10 @@ class RouteLoader
 
         if (isset($config['routes'])) {
             foreach ($config['routes'] as $key => $routeData) {
-                $this->routes[$key] = RouteConfig::fromArray($routeData);
+                $this->routes[$key] = RouteConfig::fromArray([
+                    'name' => $key,
+                    ...$routeData
+                ]);
             }
         }
     }

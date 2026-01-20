@@ -5,7 +5,6 @@ routes:
     methods: ['GET', 'POST']
     authentication:
         type: 'none'
-    rate_limit: 100
 
   user_service:
       path: '/users/{id}/'
@@ -15,7 +14,6 @@ routes:
           type: 'none'
       response_filter:
           include: [ 'id', 'name', 'username' ]
-      rate_limit: 100
 
   posts_service:
     path: '/posts'
@@ -26,7 +24,9 @@ routes:
         header: 'Authorization'
         prefix: 'Bearer '
         keys: [ 'bearer-token-1', 'bearer-token-2' ]
-    rate_limit: 100
+    rate_limit:
+      limit: 50
+      period: 60
 
   post_service:
       path: '/posts/{id}/'
@@ -36,7 +36,6 @@ routes:
           type: 'none'
       response_filter:
           exclude: [ 'userId', 'id' ]
-      rate_limit: 100
 
   comments_service:
     path: '/comments'
@@ -49,4 +48,6 @@ routes:
           password: 'password123'
         - username: 'user'
           password: 'userpass'
-    rate_limit: 100
+    rate_limit:
+      limit: 200
+      period: 3600
