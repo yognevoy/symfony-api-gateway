@@ -20,3 +20,20 @@ services:
             dockerfile: docker/php-fpm/Dockerfile
         volumes:
             - .:/var/www
+
+    redis:
+        container_name: symfony_api_gateway_redis
+        build:
+            context: ./docker/redis
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            REDIS_PASSWORD: ${REDIS_PASSWORD}
+        ports:
+            - "${REDIS_PORT}:6379"
+        volumes:
+            - redis_data:/data
+
+volumes:
+    redis_data:
+
