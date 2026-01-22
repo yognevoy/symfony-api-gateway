@@ -35,6 +35,10 @@ routes:
       methods: [ 'GET', 'POST' ]
       authentication:
           type: 'none'
+      timeout:
+          duration: 60
+          retries: 3
+          retry_delay: 500
       response_filter:
           exclude: [ 'userId', 'id' ]
 

@@ -96,7 +96,9 @@ class GatewayController extends AbstractController
         try {
             $response = $this->httpClientService->proxyRequest(
                 $targetUrl,
-                $request
+                $request,
+                [],
+                $routeConfig->timeout
             );
 
             $statusCode = $response->getStatusCode();

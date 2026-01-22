@@ -13,7 +13,8 @@ final class RouteConfig
         public readonly array                         $methods,
         public readonly AuthenticationConfigInterface $authentication,
         public readonly RateLimitConfig               $rateLimit,
-        public readonly ResponseFilterConfig          $responseFilter
+        public readonly ResponseFilterConfig          $responseFilter,
+        public readonly TimeoutConfig                 $timeout
     )
     {
     }
@@ -27,7 +28,8 @@ final class RouteConfig
             $config['methods'],
             AuthenticationConfig::fromArray($config['authentication']),
             RateLimitConfig::fromArray($config['rate_limit'] ?? RateLimitConfig::disabled()),
-            ResponseFilterConfig::fromArray($config['response_filter'] ?? [])
+            ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
+            TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled())
         );
     }
 }
