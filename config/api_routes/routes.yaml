@@ -14,6 +14,8 @@ routes:
           type: 'none'
       response_filter:
           include: [ 'id', 'name', 'username' ]
+      cache:
+        ttl: 10
 
   posts_service:
     path: '/posts'
@@ -56,3 +58,5 @@ routes:
     rate_limit:
       limit: 200
       period: 3600
+    cache:
+      ttl: 180
