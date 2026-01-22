@@ -27,6 +27,7 @@ routes:
     rate_limit:
       limit: 50
       period: 60
+      per_client: true
 
   post_service:
       path: '/posts/{id}/'

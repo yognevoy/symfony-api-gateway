@@ -62,9 +62,13 @@ class GatewayController extends AbstractController
         $headers = [];
 
         if ($routeConfig->rateLimit->isEnabled()) {
+            $identifier = $routeConfig->rateLimit->perClient
+                ? $request->getClientIp()
+                : md5($routeConfig->path);
+
             $rateLimitResult = $this->rateLimiter->checkRateLimit(
                 $routeConfig,
-                md5($routeConfig->path)
+                $identifier
             );
 
             if ($rateLimitResult->isLimited()) {

@@ -6,7 +6,8 @@ final class RateLimitConfig
 {
     private function __construct(
         public readonly int $limit,
-        public readonly int $period
+        public readonly int $period,
+        public readonly bool $perClient = false
     )
     {
     }
@@ -19,7 +20,8 @@ final class RateLimitConfig
     {
         return new self(
             $config['limit'],
-            $config['period']
+            $config['period'],
+            $config['per_client'] ?? false
         );
     }
 
@@ -32,7 +34,8 @@ final class RateLimitConfig
     {
         return [
             'limit' => 0,
-            'period' => 0
+            'period' => 0,
+            'per_client' => false
         ];
     }
 
