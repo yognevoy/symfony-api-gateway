@@ -9,9 +9,11 @@ use App\Exception\TargetApiException;
 use App\Service\AuthenticationManager;
 use App\Service\CacheService;
 use App\Service\HttpClientService;
+use App\Service\MiddlewareExecutor;
 use App\Service\RateLimiter;
 use App\Service\ResponseFilterService;
 use App\Service\RouteLoader;
+use App\ValueObject\RouteConfig;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +33,8 @@ class GatewayController extends AbstractController
         private readonly AuthenticationManager $authenticationManager,
         private readonly ResponseFilterService $responseFilterService,
         private readonly RateLimiter           $rateLimiter,
-        private readonly CacheService          $cacheService
+        private readonly CacheService          $cacheService,
+        private readonly MiddlewareExecutor    $middlewareExecutor
     )
     {
     }
@@ -61,6 +64,27 @@ class GatewayController extends AbstractController
             throw new MethodNotAllowedException();
         }
 
+        $handler = function (Request $request) use ($routeConfig, $variables) {
+            return $this->handleRequest($request, $routeConfig, $variables);
+        };
+
+        return $this->middlewareExecutor->applyMiddleware(
+            $request,
+            $routeConfig,
+            $handler
+        );
+    }
+
+    /**
+     * Handle the proxy request to the target service.
+     *
+     * @param Request $request
+     * @param RouteConfig $routeConfig
+     * @param array $variables
+     * @return Response
+     */
+    private function handleRequest(Request $request, RouteConfig $routeConfig, array $variables): Response
+    {
         $cachedResponse = $this->cacheService->get($routeConfig, $request);
         if ($cachedResponse) {
             return new Response(

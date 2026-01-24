@@ -15,7 +15,8 @@ final class RouteConfig
         public readonly RateLimitConfig               $rateLimit,
         public readonly ResponseFilterConfig          $responseFilter,
         public readonly TimeoutConfig                 $timeout,
-        public readonly CacheConfig                   $cache
+        public readonly CacheConfig                   $cache,
+        public readonly array                         $middleware
     )
     {
     }
@@ -31,7 +32,8 @@ final class RouteConfig
             RateLimitConfig::fromArray($config['rate_limit'] ?? RateLimitConfig::disabled()),
             ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
             TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled()),
-            CacheConfig::fromArray($config['cache'] ?? [])
+            CacheConfig::fromArray($config['cache'] ?? []),
+            $config['middleware'] ?? []
         );
     }
 }

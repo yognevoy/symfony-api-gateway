@@ -16,6 +16,9 @@ routes:
           include: [ 'id', 'name', 'username' ]
       cache:
         ttl: 10
+      middleware:
+        - 'App\Middleware\LoggingMiddleware'
+        - 'App\Middleware\CustomValidationMiddleware'
 
   posts_service:
     path: '/posts'
