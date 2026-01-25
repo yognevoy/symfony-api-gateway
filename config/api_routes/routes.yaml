@@ -57,7 +57,10 @@ routes:
 
   comments_service:
     path: '/comments'
-    target: 'https://jsonplaceholder.typicode.com/comments'
+    target:
+        - 'https://jsonplaceholder.typicode.com/comments'
+        - 'https://jsonplaceholder.typicode.com/comments'
+        - 'https://jsonplaceholder.typicode.com/posts'
     methods: ['GET', 'POST']
     authentication:
       type: 'basic'

@@ -9,7 +9,7 @@ final class RouteConfig
     private function __construct(
         public readonly string                        $name,
         public readonly string                        $path,
-        public readonly string                        $target,
+        public readonly string|array                  $target,
         public readonly array                         $methods,
         public readonly array                         $middleware,
         public readonly CacheConfig                   $cache,

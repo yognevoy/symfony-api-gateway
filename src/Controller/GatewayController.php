@@ -9,6 +9,7 @@ use App\Exception\TargetApiException;
 use App\Service\AuthenticationManager;
 use App\Service\CacheService;
 use App\Service\HttpClientService;
+use App\Service\LoadBalancer;
 use App\Service\MiddlewareExecutor;
 use App\Service\RateLimiter;
 use App\Service\ResponseFilterService;
@@ -34,7 +35,8 @@ class GatewayController extends AbstractController
         private readonly ResponseFilterService $responseFilterService,
         private readonly RateLimiter           $rateLimiter,
         private readonly CacheService          $cacheService,
-        private readonly MiddlewareExecutor    $middlewareExecutor
+        private readonly MiddlewareExecutor    $middlewareExecutor,
+        private readonly LoadBalancer          $loadBalancer
     )
     {
     }
@@ -123,10 +125,13 @@ class GatewayController extends AbstractController
             $routeConfig->authentication
         );
 
-        $targetUrl = $this->routeLoader->substituteVariables(
-            $routeConfig->target,
-            $variables
-        );
+        if (is_array($routeConfig->target)) {
+            $target = $this->loadBalancer->selectTarget($routeConfig->target);
+        } else {
+            $target = $routeConfig->target;
+        }
+
+        $targetUrl = $this->routeLoader->substituteVariables($target, $variables);
 
         try {
             $proxyResponse = $this->httpClientService->proxyRequest(
