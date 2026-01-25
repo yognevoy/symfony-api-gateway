@@ -2,23 +2,43 @@
 
 namespace App\Middleware;
 
-use Psr\Log\LoggerInterface;
+use App\Service\LoggingService;
+use App\ValueObject\LoggingConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class LoggingMiddleware implements MiddlewareInterface
+class LoggingMiddleware implements MiddlewareInterface, ConfigurableMiddlewareInterface
 {
+    private ?LoggingConfig $loggingConfig = null;
+    private ?string $routeName = null;
+
     public function __construct(
-        private readonly LoggerInterface $logger
-    )
+        private readonly LoggingService $loggingService
+    ) {
+    }
+
+    public function configure(mixed ...$params): void
     {
+        if (isset($params[0]) && $params[0] instanceof LoggingConfig) {
+            $this->loggingConfig = $params[0];
+        }
+
+        if (isset($params[1]) && is_string($params[1])) {
+            $this->routeName = $params[1];
+        }
     }
 
     public function process(Request $request, callable $next): Response
     {
+        if (!$this->loggingConfig || !$this->loggingConfig->enabled) {
+            return $next($request);
+        }
+
         $startTime = microtime(true);
 
-        $this->logger->info('Request received', [
+        $logger = $this->loggingService->getLogger($this->loggingConfig, $this->routeName);
+
+        $logger->info('API Gateway Request Received', [
             'method' => $request->getMethod(),
             'uri' => $request->getRequestUri(),
             'ip' => $request->getClientIp(),
@@ -28,11 +48,11 @@ class LoggingMiddleware implements MiddlewareInterface
 
         $duration = (microtime(true) - $startTime) * 1000;
 
-        $this->logger->info('Request processed', [
+        $logger->info('API Gateway Request Processed', [
             'method' => $request->getMethod(),
             'uri' => $request->getRequestUri(),
             'status_code' => $response->getStatusCode(),
-            'duration' => round($duration, 2),
+            'duration_ms' => round($duration, 2),
         ]);
 
         return $response;

@@ -5,6 +5,10 @@ routes:
     methods: ['GET', 'POST']
     authentication:
         type: 'none'
+    logging:
+      enabled: true
+      type: 'stream'
+      level: 'info'
 
   user_service:
       path: '/users/{id}/'
@@ -33,6 +37,10 @@ routes:
       limit: 50
       period: 60
       per_client: true
+    logging:
+      enabled: true
+      type: 'file'
+      level: 'debug'
 
   post_service:
       path: '/posts/{id}/'

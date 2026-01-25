@@ -2,8 +2,11 @@
 
 namespace App\Service;
 
+use App\Middleware\ConfigurableMiddlewareInterface;
+use App\Middleware\LoggingMiddleware;
 use App\Middleware\MiddlewareInterface;
 use App\ValueObject\RouteConfig;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,7 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 class MiddlewareExecutor
 {
     public function __construct(
-        private readonly MiddlewareRegistry $middlewareRegistry
+        private readonly MiddlewareRegistry $middlewareRegistry,
+        private readonly ContainerInterface $container
     )
     {
     }
@@ -28,12 +32,54 @@ class MiddlewareExecutor
      */
     public function applyMiddleware(Request $request, RouteConfig $routeConfig, callable $handler): Response
     {
-        if (empty($routeConfig->middleware)) {
+        $middlewares = array_merge(
+            $this->getSystemMiddlewares($routeConfig),
+            $this->getUserMiddlewares($routeConfig)
+        );
+
+        if (empty($middlewares)) {
             return $handler($request);
         }
 
-        $middlewares = $this->middlewareRegistry->getAll($routeConfig->middleware);
         return $this->buildMiddlewareChain($middlewares, $handler)($request);
+    }
+
+    /**
+     * Get system/core middlewares for the route.
+     *
+     * @param RouteConfig $routeConfig The route configuration
+     * @return MiddlewareInterface[]
+     */
+    private function getSystemMiddlewares(RouteConfig $routeConfig): array
+    {
+        $middlewares = [];
+
+        if ($routeConfig->logging->enabled) {
+            $loggingMiddleware = clone $this->container->get(LoggingMiddleware::class);
+
+            if ($loggingMiddleware instanceof ConfigurableMiddlewareInterface) {
+                $loggingMiddleware->configure($routeConfig->logging, $routeConfig->name);
+            }
+
+            $middlewares[] = $loggingMiddleware;
+        }
+
+        return $middlewares;
+    }
+
+    /**
+     * Get user-defined middlewares for the route.
+     *
+     * @param RouteConfig $routeConfig The route configuration
+     * @return MiddlewareInterface[]
+     */
+    private function getUserMiddlewares(RouteConfig $routeConfig): array
+    {
+        if (empty($routeConfig->middleware)) {
+            return [];
+        }
+
+        return $this->middlewareRegistry->getAll($routeConfig->middleware);
     }
 
     /**

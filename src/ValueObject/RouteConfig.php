@@ -16,7 +16,8 @@ final class RouteConfig
         public readonly ResponseFilterConfig          $responseFilter,
         public readonly TimeoutConfig                 $timeout,
         public readonly CacheConfig                   $cache,
-        public readonly array                         $middleware
+        public readonly array                         $middleware,
+        public readonly LoggingConfig                 $logging
     )
     {
     }
@@ -33,7 +34,8 @@ final class RouteConfig
             ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
             TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled()),
             CacheConfig::fromArray($config['cache'] ?? []),
-            $config['middleware'] ?? []
+            $config['middleware'] ?? [],
+            LoggingConfig::fromArray($config['logging'] ?? LoggingConfig::disabled())
         );
     }
 }
