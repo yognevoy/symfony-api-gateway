@@ -11,12 +11,12 @@ final class RouteConfig
         public readonly string                        $path,
         public readonly string                        $target,
         public readonly array                         $methods,
-        public readonly AuthenticationConfigInterface $authentication,
-        public readonly RateLimitConfig               $rateLimit,
-        public readonly ResponseFilterConfig          $responseFilter,
-        public readonly TimeoutConfig                 $timeout,
-        public readonly CacheConfig                   $cache,
         public readonly array                         $middleware,
+        public readonly CacheConfig                   $cache,
+        public readonly AuthenticationConfigInterface $authentication,
+        public readonly ResponseFilterConfig          $responseFilter,
+        public readonly RateLimitConfig               $rateLimit,
+        public readonly TimeoutConfig                 $timeout,
         public readonly LoggingConfig                 $logging
     )
     {
@@ -29,12 +29,12 @@ final class RouteConfig
             $config['path'],
             $config['target'],
             $config['methods'],
-            AuthenticationConfig::fromArray($config['authentication']),
-            RateLimitConfig::fromArray($config['rate_limit'] ?? RateLimitConfig::disabled()),
-            ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
-            TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled()),
-            CacheConfig::fromArray($config['cache'] ?? []),
             $config['middleware'] ?? [],
+            CacheConfig::fromArray($config['cache'] ?? []),
+            AuthenticationConfig::fromArray($config['authentication']),
+            ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
+            RateLimitConfig::fromArray($config['rate_limit'] ?? RateLimitConfig::disabled()),
+            TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled()),
             LoggingConfig::fromArray($config['logging'] ?? LoggingConfig::disabled())
         );
     }
