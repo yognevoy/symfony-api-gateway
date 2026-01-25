@@ -48,3 +48,19 @@ services:
     App\Service\AuthenticationManager:
         arguments:
             $authenticators: !tagged_iterator 'app.authenticator'
+
+    App\Service\Logging\Strategy\FileLogStrategy:
+        tags:
+            - { name: app.log.strategy }
+
+    App\Service\Logging\Strategy\StreamLogStrategy:
+        tags:
+            - { name: app.log.strategy }
+
+    App\Service\Logging\Strategy\SyslogLogStrategy:
+        tags:
+            - { name: app.log.strategy }
+
+    App\Service\Logging\LoggingService:
+        arguments:
+            $strategies: !tagged_iterator 'app.log.strategy'

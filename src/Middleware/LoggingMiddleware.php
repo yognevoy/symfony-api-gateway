@@ -2,7 +2,7 @@
 
 namespace App\Middleware;
 
-use App\Service\LoggingService;
+use App\Service\Logging\LoggingService;
 use App\ValueObject\LoggingConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
