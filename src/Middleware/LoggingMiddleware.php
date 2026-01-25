@@ -14,7 +14,8 @@ class LoggingMiddleware implements MiddlewareInterface, ConfigurableMiddlewareIn
 
     public function __construct(
         private readonly LoggingService $loggingService
-    ) {
+    )
+    {
     }
 
     public function configure(mixed ...$params): void
@@ -54,6 +55,26 @@ class LoggingMiddleware implements MiddlewareInterface, ConfigurableMiddlewareIn
             'status_code' => $response->getStatusCode(),
             'duration_ms' => round($duration, 2),
         ]);
+
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode >= 400 && $statusCode < 500) {
+            $logger->warning('Client Error in API Gateway Request', [
+                'method' => $request->getMethod(),
+                'uri' => $request->getRequestUri(),
+                'status_code' => $statusCode,
+                'duration_ms' => round($duration, 2),
+            ]);
+        }
+
+        if ($statusCode >= 500) {
+            $logger->error('Server Error in API Gateway Request', [
+                'method' => $request->getMethod(),
+                'uri' => $request->getRequestUri(),
+                'status_code' => $statusCode,
+                'duration_ms' => round($duration, 2),
+            ]);
+        }
 
         return $response;
     }
