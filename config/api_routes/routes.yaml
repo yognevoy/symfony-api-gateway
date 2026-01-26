@@ -4,7 +4,8 @@ routes:
     target: 'https://jsonplaceholder.typicode.com/users'
     methods: ['GET', 'POST']
     authentication:
-        type: 'none'
+        type: 'jwt'
+        secret: 'Dw/G:+@%VR[a$LV,D4L{5+(4I}+zf+ER'
     logging:
       enabled: true
       type: 'stream'
