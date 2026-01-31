@@ -91,7 +91,7 @@ class HttpClientService
      * @param array $options
      * @return ResponseInterface
      */
-    private function makeRequest(
+    protected function makeRequest(
         string $targetUrl,
         string $method,
         array  $options
@@ -110,7 +110,7 @@ class HttpClientService
      * @return ResponseInterface
      * @throws \Exception
      */
-    private function makeRequestWithRetries(
+    protected function makeRequestWithRetries(
         string        $targetUrl,
         string        $method,
         array         $options,

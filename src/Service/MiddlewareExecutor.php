@@ -50,7 +50,7 @@ class MiddlewareExecutor
      * @param RouteConfig $routeConfig The route configuration
      * @return MiddlewareInterface[]
      */
-    private function getSystemMiddlewares(RouteConfig $routeConfig): array
+    protected function getSystemMiddlewares(RouteConfig $routeConfig): array
     {
         $middlewares = [];
 
@@ -73,7 +73,7 @@ class MiddlewareExecutor
      * @param RouteConfig $routeConfig The route configuration
      * @return MiddlewareInterface[]
      */
-    private function getUserMiddlewares(RouteConfig $routeConfig): array
+    protected function getUserMiddlewares(RouteConfig $routeConfig): array
     {
         if (empty($routeConfig->middleware)) {
             return [];
@@ -89,7 +89,7 @@ class MiddlewareExecutor
      * @param callable $handler The final handler
      * @return callable
      */
-    private function buildMiddlewareChain(array $middlewares, callable $handler): callable
+    protected function buildMiddlewareChain(array $middlewares, callable $handler): callable
     {
         $chain = $handler;
 

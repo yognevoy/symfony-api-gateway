@@ -110,7 +110,7 @@ class RateLimiter
     /**
      * Generate a cache key for rate limiting.
      */
-    private function generateCacheKey(string $routeName, string $identifier): string
+    protected function generateCacheKey(string $routeName, string $identifier): string
     {
         return "rate_limit.{$routeName}.{$identifier}";
     }

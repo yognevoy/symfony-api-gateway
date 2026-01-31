@@ -42,7 +42,7 @@ class ResponseFilterService
      * @param array $includeFields
      * @return mixed
      */
-    private function applyIncludeFilter(mixed $data, array $includeFields): mixed
+    protected function applyIncludeFilter(mixed $data, array $includeFields): mixed
     {
         if (!is_array($data)) {
             return $data;
@@ -64,7 +64,7 @@ class ResponseFilterService
      * @param array $excludeFields
      * @return mixed
      */
-    private function applyExcludeFilter(mixed $data, array $excludeFields): mixed
+    protected function applyExcludeFilter(mixed $data, array $excludeFields): mixed
     {
         if (!is_array($data)) {
             return $data;

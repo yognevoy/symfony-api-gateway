@@ -76,7 +76,7 @@ class CacheService
      * @param Request $request
      * @return string
      */
-    private function generateCacheKey(RouteConfig $routeConfig, Request $request): string
+    protected function generateCacheKey(RouteConfig $routeConfig, Request $request): string
     {
         $path = $request->getPathInfo();
         $method = $request->getMethod();
