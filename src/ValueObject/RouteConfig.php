@@ -30,9 +30,15 @@ final class RouteConfig
             $config['target'],
             $config['methods'],
             $config['middleware'] ?? [],
-            CacheConfig::fromArray($config['cache'] ?? []),
-            AuthenticationConfig::fromArray($config['authentication']),
-            ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
+            cache: isset($config['cache'])
+                ? CacheConfig::fromArray($config['cache'])
+                : CacheConfig::disabled(),
+            authentication: isset($config['authentication'])
+                ? AuthenticationConfig::fromArray($config['authentication'])
+                : AuthenticationConfig::disabled(),
+            responseFilter: isset($config['response_filter'])
+                ? ResponseFilterConfig::fromArray($config['response_filter'])
+                : ResponseFilterConfig::disabled(),
             rateLimit: isset($config['rate_limit'])
                 ? RateLimitConfig::fromArray($config['rate_limit'])
                 : RateLimitConfig::disabled(),

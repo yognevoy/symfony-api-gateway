@@ -27,4 +27,9 @@ final class AuthenticationConfig
                 throw new \InvalidArgumentException("Unknown authentication type: {$type}");
         }
     }
+
+    public static function disabled(): AuthenticationConfigInterface
+    {
+        return NoAuthenticationConfig::fromArray([]);
+    }
 }

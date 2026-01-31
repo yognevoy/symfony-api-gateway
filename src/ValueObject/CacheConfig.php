@@ -17,6 +17,13 @@ final class CacheConfig
         );
     }
 
+    public static function disabled(): self
+    {
+        return new self(
+            ttl: null
+        );
+    }
+
     public function isEnabled(): bool
     {
         return $this->ttl !== null && $this->ttl > 0;

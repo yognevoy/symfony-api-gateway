@@ -22,6 +22,14 @@ final class ResponseFilterConfig
         );
     }
 
+    public static function disabled(): self
+    {
+        return new self(
+            include: [],
+            exclude: []
+        );
+    }
+
     /**
      * Checks if the response filter is empty.
      *
