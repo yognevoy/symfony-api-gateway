@@ -7,7 +7,7 @@ namespace App\ValueObject\Auth;
  */
 final class ApiKeyAuthenticationConfig implements AuthenticationConfigInterface
 {
-    private function __construct(
+    public function __construct(
         public readonly ?string $header = null,
         public readonly ?string $prefix = null,
         public readonly array $keys = []

@@ -7,7 +7,7 @@ namespace App\ValueObject\Auth;
  */
 final class JwtAuthenticationConfig implements AuthenticationConfigInterface
 {
-    private function __construct(
+    public function __construct(
         public readonly ?string $header = 'Authorization',
         public readonly string $prefix = 'Bearer ',
         public readonly string $secret = ''

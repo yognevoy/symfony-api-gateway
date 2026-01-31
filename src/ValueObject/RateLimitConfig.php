@@ -4,7 +4,7 @@ namespace App\ValueObject;
 
 final class RateLimitConfig
 {
-    private function __construct(
+    public function __construct(
         public readonly int $limit,
         public readonly int $period,
         public readonly bool $perClient = false

@@ -4,7 +4,7 @@ namespace App\ValueObject;
 
 final class ResponseFilterConfig
 {
-    private function __construct(
+    public function __construct(
         public readonly array $include,
         public readonly array $exclude
     ) {

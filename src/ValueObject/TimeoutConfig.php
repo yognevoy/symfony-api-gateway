@@ -8,7 +8,7 @@ final class TimeoutConfig
     public const DEFAULT_RETRIES = 0;
     public const DEFAULT_RETRY_DELAY = 1000;
 
-    private function __construct(
+    public function __construct(
         public readonly int $duration,
         public readonly int $retries,
         public readonly int $retryDelay

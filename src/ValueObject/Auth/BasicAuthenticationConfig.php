@@ -7,7 +7,7 @@ namespace App\ValueObject\Auth;
  */
 final class BasicAuthenticationConfig implements AuthenticationConfigInterface
 {
-    private function __construct(
+    public function __construct(
         public readonly array $users = []
     )
     {

@@ -6,7 +6,7 @@ use App\ValueObject\Auth\AuthenticationConfigInterface;
 
 final class RouteConfig
 {
-    private function __construct(
+    public function __construct(
         public readonly string                        $name,
         public readonly string                        $path,
         public readonly string|array                  $target,

@@ -7,7 +7,7 @@ namespace App\ValueObject\Auth;
  */
 final class NoAuthenticationConfig implements AuthenticationConfigInterface
 {
-    private function __construct()
+    public function __construct()
     {
     }
 
