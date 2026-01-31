@@ -10,6 +10,10 @@ use App\ValueObject\Auth\NoAuthenticationConfig;
 
 final class AuthenticationConfig
 {
+    /**
+     * @param array $config
+     * @return AuthenticationConfigInterface
+     */
     public static function fromArray(array $config): AuthenticationConfigInterface
     {
         $type = $config['type'];
@@ -28,6 +32,11 @@ final class AuthenticationConfig
         }
     }
 
+    /**
+     * Creates a disabled authentication limit configuration.
+     *
+     * @return AuthenticationConfigInterface
+     */
     public static function disabled(): AuthenticationConfigInterface
     {
         return NoAuthenticationConfig::fromArray([]);

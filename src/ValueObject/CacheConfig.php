@@ -10,6 +10,10 @@ final class CacheConfig
     {
     }
 
+    /**
+     * @param array $config
+     * @return self
+     */
     public static function fromArray(array $config): self
     {
         return new self(
@@ -17,6 +21,11 @@ final class CacheConfig
         );
     }
 
+    /**
+     * Creates a disabled cache configuration.
+     *
+     * @return CacheConfig
+     */
     public static function disabled(): self
     {
         return new self(
@@ -24,6 +33,11 @@ final class CacheConfig
         );
     }
 
+    /**
+     * Checks if cache is enabled.
+     *
+     * @return bool
+     */
     public function isEnabled(): bool
     {
         return $this->ttl !== null && $this->ttl > 0;

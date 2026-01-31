@@ -30,6 +30,10 @@ final class LoggingConfig
         }
     }
 
+    /**
+     * @param array $config
+     * @return self
+     */
     public static function fromArray(array $config): self
     {
         return new self(
@@ -39,6 +43,11 @@ final class LoggingConfig
         );
     }
 
+    /**
+     * Creates a disabled logging configuration.
+     *
+     * @return LoggingConfig
+     */
     public static function disabled(): self
     {
         return new self(
@@ -48,6 +57,11 @@ final class LoggingConfig
         );
     }
 
+    /**
+     * Checks if logging is enabled.
+     *
+     * @return bool
+     */
     public function isEnabled(): bool
     {
         return $this->enabled;

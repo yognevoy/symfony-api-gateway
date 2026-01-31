@@ -22,6 +22,11 @@ final class ResponseFilterConfig
         );
     }
 
+    /**
+     * Creates a disabled response filter configuration.
+     *
+     * @return ResponseFilterConfig
+     */
     public static function disabled(): self
     {
         return new self(

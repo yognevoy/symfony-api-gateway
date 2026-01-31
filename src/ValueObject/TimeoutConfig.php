@@ -16,6 +16,10 @@ final class TimeoutConfig
     {
     }
 
+    /**
+     * @param array $config
+     * @return self
+     */
     public static function fromArray(array $config): self
     {
         return new self(
@@ -25,6 +29,11 @@ final class TimeoutConfig
         );
     }
 
+    /**
+     * Creates a disabled timeout configuration.
+     *
+     * @return TimeoutConfig
+     */
     public static function disabled(): self
     {
         return new self(
