@@ -25,12 +25,12 @@ final class TimeoutConfig
         );
     }
 
-    public static function disabled(): array
+    public static function disabled(): self
     {
-        return [
-            'duration' => self::DEFAULT_DURATION,
-            'retries' => self::DEFAULT_RETRIES,
-            'retry_delay' => self::DEFAULT_RETRY_DELAY
-        ];
+        return new self(
+            duration: self::DEFAULT_DURATION,
+            retries: self::DEFAULT_RETRIES,
+            retryDelay: self::DEFAULT_RETRY_DELAY
+        );
     }
 }

@@ -28,15 +28,15 @@ final class RateLimitConfig
     /**
      * Creates a disabled rate limit configuration.
      *
-     * @return array
+     * @return RateLimitConfig
      */
-    public static function disabled(): array
+    public static function disabled(): self
     {
-        return [
-            'limit' => 0,
-            'period' => 0,
-            'per_client' => false
-        ];
+        return new self(
+            limit: 0,
+            period: 0,
+            perClient: false
+        );
     }
 
     /**

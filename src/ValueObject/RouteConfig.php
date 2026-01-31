@@ -33,9 +33,15 @@ final class RouteConfig
             CacheConfig::fromArray($config['cache'] ?? []),
             AuthenticationConfig::fromArray($config['authentication']),
             ResponseFilterConfig::fromArray($config['response_filter'] ?? []),
-            RateLimitConfig::fromArray($config['rate_limit'] ?? RateLimitConfig::disabled()),
-            TimeoutConfig::fromArray($config['timeout'] ?? TimeoutConfig::disabled()),
-            LoggingConfig::fromArray($config['logging'] ?? LoggingConfig::disabled())
+            rateLimit: isset($config['rate_limit'])
+                ? RateLimitConfig::fromArray($config['rate_limit'])
+                : RateLimitConfig::disabled(),
+            timeout: isset($config['timeout'])
+                ? TimeoutConfig::fromArray($config['timeout'])
+                : TimeoutConfig::disabled(),
+            logging: isset($config['logging'])
+                ? LoggingConfig::fromArray($config['logging'])
+                : LoggingConfig::disabled()
         );
     }
 }

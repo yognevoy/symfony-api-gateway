@@ -39,13 +39,13 @@ final class LoggingConfig
         );
     }
 
-    public static function disabled(): array
+    public static function disabled(): self
     {
-        return [
-            'enabled' => false,
-            'type' => 'stream',
-            'level' => 'info'
-        ];
+        return new self(
+            enabled: false,
+            type: 'stream',
+            level: 'info'
+        );
     }
 
     public function isEnabled(): bool
