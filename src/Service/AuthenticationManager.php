@@ -39,6 +39,6 @@ class AuthenticationManager
             }
         }
 
-        throw new UnauthorizedHttpException(null, "Unsupported authentication type: {$config->getType()}");
+        throw new UnauthorizedHttpException('', "Unsupported authentication type: {$config->getType()}");
     }
 }
