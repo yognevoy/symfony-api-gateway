@@ -1,0 +1,11 @@
+# Test environment services configuration
+imports:
+    - { resource: 'services.yaml' }
+
+parameters:
+    api_routes.config: '%kernel.project_dir%/config/api_routes/test/routes.yaml'
+
+services:
+    App\Service\RouteLoader:
+        arguments:
+            $configPath: '%api_routes.config%'

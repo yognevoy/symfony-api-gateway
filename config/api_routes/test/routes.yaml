@@ -1,0 +1,62 @@
+routes:
+    test_api:
+        path: '/test-api'
+        target: 'https://jsonplaceholder.typicode.com/users'
+        methods: [ 'GET' ]
+        authentication:
+            type: 'none'
+        logging:
+            enabled: false
+
+    test_api_post:
+        path: '/test-api-post'
+        target: 'https://jsonplaceholder.typicode.com/posts'
+        methods: [ 'POST' ]
+        authentication:
+            type: 'none'
+        logging:
+            enabled: false
+
+    test_api_with_auth:
+        path: '/test-api-auth'
+        target: 'https://jsonplaceholder.typicode.com/users'
+        methods: [ 'GET' ]
+        authentication:
+            type: 'api_key'
+            header: 'X-API-Key'
+            keys: [ 'test-key-123' ]
+        logging:
+            enabled: false
+
+    test_api_user:
+        path: '/test-api-user/{id}'
+        target: 'https://jsonplaceholder.typicode.com/users/{id}'
+        methods: [ 'GET' ]
+        authentication:
+            type: 'none'
+        logging:
+            enabled: false
+
+    test_api_with_response_filter:
+        path: '/test-api-filter'
+        target: 'https://jsonplaceholder.typicode.com/users'
+        methods: [ 'GET' ]
+        authentication:
+            type: 'none'
+        response_filter:
+            include: [ 'id', 'name', 'email' ]
+        logging:
+            enabled: false
+
+    test_api_with_rate_limit:
+        path: '/test-api-rate-limit'
+        target: 'https://jsonplaceholder.typicode.com/users'
+        methods: [ 'GET' ]
+        authentication:
+            type: 'none'
+        rate_limit:
+            limit: 2
+            period: 60
+            per_client: true
+        logging:
+            enabled: false
