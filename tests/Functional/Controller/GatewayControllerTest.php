@@ -17,10 +17,9 @@ class GatewayControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
         $cacheApp = static::getContainer()->get('cache.app');
         $cacheApp->clear();
+        parent::tearDown();
     }
 
     public function testGetRequestToTestApiRoute(): void
